@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:pos_flutter/core/utils/color.dart';
+import 'package:pos_flutter/config/style/app_colors.dart';
 import 'package:pos_flutter/modules/internet/features/connection_internet/presentation/cubit/connection_internet_cubit.dart';
 
 PreferredSize customInternetAppBar() {
@@ -22,13 +22,13 @@ PreferredSize customInternetAppBar() {
                       child: Icon(
                         Icons.circle,
                         size: 20,
-                        color: AppColor.green,
+                        color: AppColors.green,
                       ),
                     ),
-                    Text(
+                    Text(  
                       formattedDate,
                       style: const TextStyle(
-                          color: AppColor.green,
+                          color: AppColors.green,
                           fontSize: 18,
                           fontWeight: FontWeight.w500),
                     ),
@@ -37,7 +37,7 @@ PreferredSize customInternetAppBar() {
                       child: Icon(
                         Icons.cloud_done_rounded,
                         size: 30,
-                        color: AppColor.green,
+                        color: AppColors.green,
                       ),
                     ),
                     const Padding(
@@ -59,13 +59,13 @@ PreferredSize customInternetAppBar() {
                       child: Icon(
                         Icons.circle,
                         size: 20,
-                        color: AppColor.red,
+                        color: AppColors.red,
                       ),
                     ),
                     Text(
                       formattedDate,
                       style: const TextStyle(
-                          color: AppColor.red,
+                          color: AppColors.red,
                           fontSize: 18,
                           fontWeight: FontWeight.w500),
                     ),
@@ -74,7 +74,7 @@ PreferredSize customInternetAppBar() {
                       child: Icon(
                         Icons.cloud_off_outlined,
                         size: 30,
-                        color: AppColor.grey,
+                        color: AppColors.grey,
                       ),
                     ),
                   ],
