@@ -67,12 +67,13 @@ class ProductModel {
         productVariations!.add(new ProductVariationsModel.fromJson(v));
       });
     }
-    brand = json['brand'] != null ? new BrandModel.fromJson(json['brand']) : null;
+    brand =
+        json['brand'] != null ? new BrandModel.fromJson(json['brand']) : null;
     unit = json['unit'] != null ? new UnitModel.fromJson(json['unit']) : null;
     category = json['category'] != null
         ? new CategoryModel.fromJson(json['category'])
         : null;
-  
+
     if (json['product_locations'] != null) {
       productLocations = <ProductLocationsModel>[];
       json['product_locations'].forEach((v) {
@@ -87,14 +88,14 @@ class ProductModel {
     data['name'] = this.name;
     data['business_id'] = this.businessId;
     data['type'] = this.type;
-    
+
     data['enable_stock'] = this.enableStock;
     data['alert_quantity'] = this.alertQuantity;
     data['sku'] = this.sku;
     data['barcode_type'] = this.barcodeType;
-   
+
     data['enable_sr_no'] = this.enableSrNo;
-    
+
     data['image'] = this.image;
 
     data['created_by'] = this.createdBy;
@@ -115,7 +116,7 @@ class ProductModel {
     if (this.category != null) {
       data['category'] = this.category!.toJson();
     }
- 
+
     if (this.productLocations != null) {
       data['product_locations'] =
           this.productLocations!.map((v) => v.toJson()).toList();

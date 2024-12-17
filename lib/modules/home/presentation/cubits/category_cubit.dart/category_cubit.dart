@@ -4,9 +4,9 @@ import 'package:pos_flutter/modules/home/domain/repositories/category_repo/categ
 import 'package:pos_flutter/modules/home/presentation/cubits/category_cubit.dart/category_state.dart';
 
 class CategoryCubit extends Cubit<CategoryState> {
-  final CategoryRepo _CategoryRepo;
+  final CategoryRepo _categoryRepo;
 
-  CategoryCubit(this._CategoryRepo) : super(InitState());
+  CategoryCubit(this._categoryRepo) : super(InitState());
 
   static CategoryCubit get(context, {bool listen = false}) =>
       BlocProvider.of<CategoryCubit>(context, listen: listen);
@@ -14,16 +14,9 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   getAllCategories() async {
     emit(GetCategoryLoadingState());
-    final result = await _CategoryRepo.getAllCategories();
-    result.fold((l) {
-      final allCategories = l.data["data"];
-      if (allCategories != null) {
-        categories=allCategories
-            .map<CategoryModel>((e) => CategoryModel.fromJson(e))
-            .toList();
-      }
-      print("${categories.length} + 3333333333333");
-      emit(GetCategorySuccessState());
-    }, (r) => emit(GetCategoryErrorState()));
+    final result = await _categoryRepo.getCategories();
+    result.fold((data) {
+      emit(GetCategorySuccessState(data));
+    }, (failure) => emit(GetCategoryErrorState(failure.toString())));
   }
 }

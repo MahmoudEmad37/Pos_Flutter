@@ -1,28 +1,28 @@
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
-import 'package:pos_flutter/core/api/dio_helper.dart';
 import 'package:pos_flutter/core/api/failure.dart';
-import 'package:pos_flutter/core/api/response_model.dart';
-import 'package:pos_flutter/core/utils/strings/constants.dart';
-import 'package:pos_flutter/core/utils/strings/end_points.dart';
+import 'package:pos_flutter/modules/home/data/datasource/home_remote_datasource.dart';
+import 'package:pos_flutter/modules/home/data/models/product_model/product_model.dart';
 
 class ProductRepo {
-  final DioHelper _dio = DioHelper();
-  Future<Either<ResponseModel, Failure>> getAllProducts(
-      {required int page}) async {
+  final HomeRemoteDatasource _homeRemoteDatasource = HomeRemoteDatasource();
+
+  Future<Either<List<ProductModel>, Failure>> getProducts(
+      {required int page, String? categoryId, String? brandId}) async {
     try {
-      Response response = await _dio.get(
-        token: Constants.token,
-        endPoint: EndPoints.getAllProducts,
-        query: {
-          "per_page": page,
-          "location_id": Constants.locationId,
-        },
-      );
-      print(response.data.toString());
-      return Left(ResponseModel.fromJson(response.data));
-    } on ResponseModel catch (responseModel) {
-      return Left(responseModel);
+      final response = await _homeRemoteDatasource.getProducts(
+          page: page, categoryId: categoryId, brandId: brandId);
+      Either<List<ProductModel>, Failure> result = response.fold((l) {
+        final allProducts = l.data["data"];
+        List<ProductModel> products = [];
+        if (allProducts != null) {
+          products = allProducts
+              .map<ProductModel>((e) => ProductModel.fromJson(e))
+              .toList();
+        }
+        print("${products.length} + 11111111111");
+        return Left(products);
+      }, (failure) => Right(failure));
+      return result;
     } on Failure catch (failure) {
       return Right(failure);
     }

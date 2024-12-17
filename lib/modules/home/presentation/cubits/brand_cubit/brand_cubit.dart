@@ -4,25 +4,20 @@ import 'package:pos_flutter/modules/home/domain/repositories/brand_repo/brand_re
 import 'package:pos_flutter/modules/home/presentation/cubits/brand_cubit/brand_state.dart';
 
 class BrandCubit extends Cubit<BrandState> {
-  final BrandRepo _brandsRepo;
+  final BrandRepo _brandRepo;
 
-  BrandCubit(this._brandsRepo) : super(InitState());
+  BrandCubit(this._brandRepo) : super(InitState());
 
   static BrandCubit get(context, {bool listen = false}) =>
       BlocProvider.of<BrandCubit>(context, listen: listen);
+
   List<BrandModel> brands = [];
 
   getAllBrands() async {
     emit(GetBrandLoadingState());
-    final result = await _brandsRepo.getAllBrands();
-    result.fold((l) {
-      final allBrands = l.data["data"];
-      if (allBrands != null) {
-        brands =
-            allBrands.map<BrandModel>((e) => BrandModel.fromJson(e)).toList();
-      }
-      print("${brands.length} + 2222222222222");
-      emit(GetBrandSuccessState());
-    }, (r) => emit(GetBrandErrorState()));
+    final result = await _brandRepo.getBrands();
+    result.fold((data) {
+      emit(GetBrandSuccessState(data));
+    }, (failure) => emit(GetBrandErrorState(failure.toString())));
   }
 }

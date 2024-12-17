@@ -12,9 +12,11 @@ import 'package:pos_flutter/core/utils/variables/routerkeys.dart';
 import 'package:pos_flutter/injection_container.dart';
 import 'package:pos_flutter/modules/home/domain/repositories/brand_repo/brand_repo.dart';
 import 'package:pos_flutter/modules/home/domain/repositories/category_repo/category_repo.dart';
+import 'package:pos_flutter/modules/home/domain/repositories/contact_repo/contact_repo.dart';
 import 'package:pos_flutter/modules/home/domain/repositories/product_repo/product_repo.dart';
 import 'package:pos_flutter/modules/home/presentation/cubits/brand_cubit/brand_cubit.dart';
 import 'package:pos_flutter/modules/home/presentation/cubits/category_cubit.dart/category_cubit.dart';
+import 'package:pos_flutter/modules/home/presentation/cubits/contact_cubit/contact_cubit.dart';
 import 'package:pos_flutter/modules/home/presentation/cubits/product_cubit/product_cubit.dart';
 import 'package:pos_flutter/modules/internet/features/connection_internet/presentation/cubit/connection_internet_cubit.dart';
 import 'package:pos_flutter/modules/main/presentation/cubits/app_cubit.dart';
@@ -36,16 +38,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => AppCubit()),
-        BlocProvider(create: (_) => ConnectionInternetCubit()),
+        BlocProvider(create: (context) => AppCubit()),
+        BlocProvider(create: (context) => ConnectionInternetCubit()),
         BlocProvider(
-            create: (_) => BrandCubit(sl<BrandRepo>())..getAllBrands()),
+            create: (context) => BrandCubit(sl<BrandRepo>())..getAllBrands()),
         BlocProvider(
-            create: (_) =>
+            create: (context) =>
                 CategoryCubit(sl<CategoryRepo>())..getAllCategories()),
         BlocProvider(
             create: (_) =>
-                ProductCubit(sl<ProductRepo>())..getAllProducts(page: 1)),
+                ProductCubit(sl<ProductRepo>())..getAllProducts(page: -1)),
+        BlocProvider(
+            create: (_) =>
+                ContactCubit(sl<ContactRepo>())..getAllContacts(page: -1)),
       ],
       child: ScreenUtilInit(
           designSize: const Size(430, 932),

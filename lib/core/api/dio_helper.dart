@@ -29,8 +29,8 @@ class DioHelper {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       };
-      print(endPoint);
-      print(token);
+      // print(endPoint);
+      // print(token);
       return await _dio.get(endPoint,
           data: FormData.fromMap(data),
           queryParameters: query,

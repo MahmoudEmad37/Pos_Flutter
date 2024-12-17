@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pos_flutter/modules/home/data/models/product_model/product_model.dart';
 import 'package:pos_flutter/modules/home/domain/repositories/product_repo/product_repo.dart';
 import 'package:pos_flutter/modules/home/presentation/cubits/product_cubit/product_state.dart';
 
@@ -10,20 +9,13 @@ class ProductCubit extends Cubit<ProductState> {
 
   static ProductCubit get(context, {bool listen = false}) =>
       BlocProvider.of<ProductCubit>(context, listen: listen);
-  List<ProductModel> products = [];
+  // List<ProductModel> products = [];
 
-  getAllProducts({required int page}) async {
+  getAllProducts({required int page, String? categoryId, String? brandId}) async {
     emit(GetProductLoadingState());
-    final result = await _productRepo.getAllProducts(page: page);
-    result.fold((l) {
-      final allProducts = l.data["data"];
-      if (allProducts != null) {
-        products = allProducts
-            .map<ProductModel>((e) => ProductModel.fromJson(e))
-            .toList();
-      }
-      print("${products.length} + 11111111111");
-      emit(GetProductSuccessState());
-    }, (r) => emit(GetProductErrorState()));
+    final result = await _productRepo.getProducts(page: page,categoryId: categoryId, brandId: brandId);
+    result.fold((data) {
+      emit(GetProductSuccessState(data));
+    }, (failure) => emit(GetProductErrorState(failure.toString())));
   }
 }

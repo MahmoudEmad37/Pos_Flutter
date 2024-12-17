@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pos_flutter/config/style/app_colors.dart';
-import 'package:pos_flutter/config/style/text_styles.dart';
-import 'package:pos_flutter/core/utils/shimmer/home_container_menu_shimmer.dart';
-import 'package:pos_flutter/core/utils/shimmer/product_List_shimmer.dart';
+import 'package:pos_flutter/core/utils/shimmer/product_container_shimmer.dart';
 import 'package:pos_flutter/core/utils/strings/app_strings.dart';
 import 'package:pos_flutter/core/utils/variables/routerkeys.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pos_flutter/core/widgets/default_search_box.dart';
-import 'package:pos_flutter/modules/home/data/models/Category_model/Category_model.dart';
-import 'package:pos_flutter/modules/home/data/models/brand_model/brand_model.dart';
-import 'package:pos_flutter/modules/home/presentation/cubits/brand_cubit/brand_cubit.dart';
-import 'package:pos_flutter/modules/home/presentation/cubits/brand_cubit/brand_state.dart';
-import 'package:pos_flutter/modules/home/presentation/cubits/category_cubit.dart/category_cubit.dart';
-import 'package:pos_flutter/modules/home/presentation/cubits/category_cubit.dart/category_state.dart';
+import 'package:pos_flutter/modules/home/presentation/cubits/contact_cubit/contact_cubit.dart';
+import 'package:pos_flutter/modules/home/presentation/cubits/contact_cubit/contact_state.dart';
 import 'package:pos_flutter/modules/home/presentation/cubits/product_cubit/product_cubit.dart';
-import 'package:pos_flutter/modules/home/presentation/cubits/product_cubit/product_state.dart';
-import 'package:pos_flutter/modules/home/presentation/widgets/brand_category_menu.dart';
-import 'package:pos_flutter/modules/home/presentation/widgets/home_container_box.dart';
+import 'package:pos_flutter/modules/home/presentation/widgets/brand_category_menus.dart';
+import 'package:pos_flutter/modules/home/presentation/widgets/home_contact_dropdown_menu.dart';
+import 'package:pos_flutter/modules/home/presentation/widgets/product_list_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,26 +23,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String searchValue = "";
 
-  int? selectedItemId = 0;
-  //bool isLoading = true;
-
-  // @override
-  // void initState() {
-  //   // Future.delayed(const Duration(seconds: 2)).then((_) {
-  //   //   if (mounted) {
-  //   //     setState(() {
-  //   //       isLoading = false;
-  //   //     });
-  //   //   }
-  //   // });
-  //   super.initState();
-  // }
-
+  String? selectedBrand;
+  String? selectedCategory;
+  String? selectedContact;
   @override
   Widget build(BuildContext context) {
     final TextEditingController searchController = TextEditingController();
-
-    final allProducts = ProductCubit.get(context).products;
 
     return Scaffold(
       appBar: AppBar(
@@ -84,117 +64,97 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          const BrandCategoryMenus(),
-          BlocBuilder<ProductCubit, ProductState>(builder: (context, state) {
-            return Container(
-                padding: const EdgeInsets.all(8.0),
-                height: 210,
-                child: state is GetProductLoadingState || allProducts.isEmpty
-                    ? const ProductListShimmer()
-                    : state is GetProductSuccessState
-                        ? ListView.builder(
-                            itemCount: allProducts.length,
-                            itemBuilder: (context, index) {
-                              double prodctQty = 1;
-                              // allProducts[index]
-                              //         .productVariations!
-                              //         .isNotEmpty
-                              //     ? allProducts[index]
-                              //             .productVariations![0]
-                              //             .variations!
-                              //             .isNotEmpty
-                              //         ? allProducts[index]
-                              //                 .productVariations![0]
-                              //                 .variations![0]
-                              //                 .variationLocationDetails!
-                              //                 .isNotEmpty
-                              //             ? allProducts[index]
-                              //                 .productVariations![0]
-                              //                 .variations![0]
-                              //                 .variationLocationDetails![0]
-                              //                 .qtyAvailable!
-                              //             : 0
-                              //         : 0
-                              //     : 0;
-
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 2.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: prodctQty > 0
-                                            ? AppColors.borderColor
-                                            : AppColors.red,
-                                        width: 2,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 4.0),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        child: Text(
-                                          allProducts[index].name!,
-                                          textAlign: TextAlign.center,
-                                          maxLines: 2,
-                                          style: AppTextStyle
-                                              .cairoSemiBold16DarkBlue,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        child: Text(
-                                          "200.0",
-                                          // allProducts[index]
-                                          //     .productVariations![0]
-                                          //     .variations![0]
-                                          //     .defaultPurchasePrice!
-                                          //     .toString(),
-                                          textAlign: TextAlign.center,
-                                          style: AppTextStyle.cairoBold16red,
-                                        ),
-                                      ),
-                                      prodctQty > 0
-                                          ? Container(
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      AppColors.addButtonColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          30)),
-                                              child: IconButton(
-                                                onPressed: () {},
-                                                icon: const Icon(
-                                                  Icons.add,
-                                                  color: AppColors.white,
-                                                ),
-                                                iconSize: 20,
-                                              ))
-                                          : const SizedBox(
-                                              height: 48,
-                                            ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          )
-                        : const SizedBox());
-          })
-        ]),
+        child: SingleChildScrollView(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            BrandCategoryMenus(
+                brandOnChange: brandOnChangeMenu,
+                categoryOnChange: categoryOnChangeMenu,
+                brandOnClear: brandOnClearMenu,
+                categoryOnClear: categoryOnClearMenu,
+                searchFn: searchMenuFun),
+            const ProductsListWidget(),
+            const Divider(
+              indent: 10,
+              endIndent: 10,
+              color: AppColors.grey3,
+              thickness: 2,
+            ),
+            BlocBuilder<ContactCubit, ContactState>(
+              builder: (context, state) {
+                return state is GetContactLoadingState
+                    ? const ProductContainerShimmer()
+                    : state is GetContactSuccessState
+                        ? HomeContactDropdownMenu(
+                            title: AppStrings.contactName,
+                            contacts: state.contacts,
+                            onChanged: contactOnChangeMenu,
+                            searchFn: searchMenuFun)
+                        : Container(
+                            width: 10,
+                            height: 10,
+                            color: Colors.red,
+                          );
+              },
+            ),
+          ]),
+        ),
       ),
     );
   }
 
-  // Row brandCategoryMenus() {
+  searchMenuFun(String keyword, Items) {
+    List<int> ret = [];
+    if (Items != null && keyword.isNotEmpty) {
+      keyword.split(" ").forEach((k) {
+        int i = 0;
+        Items.forEach((item) {
+          if (k.isNotEmpty &&
+              (item.value.name
+                  .toString()
+                  .toLowerCase()
+                  .contains(k.toLowerCase()))) {
+            ret.add(i);
+          }
+          i++;
+        });
+      });
+    }
+    if (keyword.isEmpty) {
+      ret = Iterable<int>.generate(Items.length).toList();
+    }
+    return (ret);
+  }
 
-  //   return
-  // }
+  contactOnChangeMenu(value) {
+    selectedContact = value.id.toString();
+    print("selectedContact");
+    print(selectedContact);
+  }
+
+  brandOnChangeMenu(value) {
+    selectedBrand = value.id.toString();
+    refreshProducts();
+  }
+
+  categoryOnChangeMenu(value) {
+    selectedCategory = value.id.toString();
+    refreshProducts();
+  }
+
+  brandOnClearMenu() {
+    selectedBrand = null;
+    refreshProducts();
+  }
+
+  categoryOnClearMenu() {
+    selectedCategory = null;
+    refreshProducts();
+  }
+
+  refreshProducts() {
+    ProductCubit.get(context).getAllProducts(
+        page: -1, categoryId: selectedCategory, brandId: selectedBrand);
+    print('maaaaxxx');
+  }
 }

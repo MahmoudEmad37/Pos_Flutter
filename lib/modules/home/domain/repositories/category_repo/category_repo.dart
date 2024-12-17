@@ -1,23 +1,28 @@
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
-import 'package:pos_flutter/core/api/dio_helper.dart';
+
 import 'package:pos_flutter/core/api/failure.dart';
-import 'package:pos_flutter/core/api/response_model.dart';
-import 'package:pos_flutter/core/utils/strings/constants.dart';
-import 'package:pos_flutter/core/utils/strings/end_points.dart';
+
+import 'package:pos_flutter/modules/home/data/datasource/home_remote_datasource.dart';
+import 'package:pos_flutter/modules/home/data/models/category_model/category_model.dart';
 
 class CategoryRepo {
-  final DioHelper _dio = DioHelper();
-  Future<Either<ResponseModel, Failure>> getAllCategories() async {
+  final HomeRemoteDatasource _homeRemoteDatasource = HomeRemoteDatasource();
+
+  Future<Either<List<CategoryModel>, Failure>> getCategories() async {
     try {
-      Response response = await _dio.get(
-        token: Constants.token,
-        endPoint: EndPoints.getAllCategories,
-      );
-      print(response.data.toString());
-      return Left(ResponseModel.fromJson(response.data));
-    } on ResponseModel catch (responseModel) {
-      return Left(responseModel);
+      final response = await _homeRemoteDatasource.getCategories();
+      Either<List<CategoryModel>, Failure> result = response.fold((l) {
+        final allCategories = l.data["data"];
+        List<CategoryModel> categories = [];
+        if (allCategories != null) {
+          categories = allCategories
+              .map<CategoryModel>((e) => CategoryModel.fromJson(e))
+              .toList();
+        }
+        print("${categories.length} + 22222222222");
+        return Left(categories);
+      }, (failure) => Right(failure));
+      return result;
     } on Failure catch (failure) {
       return Right(failure);
     }
